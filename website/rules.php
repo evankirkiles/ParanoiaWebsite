@@ -11,7 +11,7 @@
 			h2 {font-size: 20px;
 					color: rgb(179, 179, 179)}
 			h3 {font-size: 20px;
-					color: CadetBlue}
+					font-family: 'Courier New'}
 			p  {color: grey;}
       ul {text-align: center;
           list-style-position: outside;
@@ -42,7 +42,7 @@ Dickinson 227.</li>
             </ul>
           </li>
           <li>Once an agent has tagged their target, they must submit a report of
-their success via <a href="https://goo.gl/forms/O26iqcx8NF9ieQY32"><b><font color=#66ddff>this form</font></b></a>. Agents should make sure that they have
+their success via <a href="https://goo.gl/forms/O26iqcx8NF9ieQY32"><b><font color=#f44336>this form</font></b></a>. Agents should make sure that they have
 proof of the tag (preferably in the form of photographic evidence) just
 in case there is some doubt of tag legitimacy.
             <ul>
@@ -79,9 +79,9 @@ eliminations will be the victor.</li>
 		<h3 align = 'center'><a href="/leaderboards.php" hspace=20><font color=#8f9b9e>Leaderboards&emsp;</font></a>
 			<a href="/rules.php" hspace=20><font color=#8f9b9e>Rules&emsp;</font></a>
 		<a href="/announcements.php" hspace=20><font color=#8f9b9e>Announcements</font></a></h3>
-    <h3 align = 'center'><a href="https://goo.gl/forms/O26iqcx8NF9ieQY32" hspace=20><font color=#66ddff>Elimination Form&emsp;</font></a>
-    <a href="https://docs.google.com/spreadsheets/d/1ndpIGS8XWhHn84MWfjxlm6yR0COYSnLJlBkI3zt4cyY/edit#gid=0" hspace=20><font color=#a8babf>Agent Database</font></a></h3>
-		<h3 align = 'center'><a href="/controlcenter.php" hspace=20><font color=#8f9b9e>Control Center</font></a></h3>
+    <h3 align = 'center'><a href="https://goo.gl/forms/O26iqcx8NF9ieQY32" hspace=20><font color=#f44336>Elimination Form&emsp;</font></a>
+			<a href="/codenamefinder.php" hspace=20><font color=#a8babf>Agent Database</font></a></h3>
+			<h3 align = 'center'><a href="/controlcenter.php" hspace=20><font color=#FFD700 id='controlcenter'></font></a></h3>
 	</p>
 	</body>
 </html>
