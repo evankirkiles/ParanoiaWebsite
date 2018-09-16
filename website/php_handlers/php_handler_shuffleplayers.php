@@ -51,8 +51,9 @@ if ($results) {
     // Now update the mySQL database
     $conn->query($sql_updatetargets1 . $newtargets[$i] . $sql_updatetargets2 . $list[$i]);
   }
+  echo json_encode(1);
 } else {
-  echo "Error retrieving record. " . $conn->error;
+  echo json_encode(0);
 }
 
 // Close connection

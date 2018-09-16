@@ -4,10 +4,10 @@ $username = 'paranoiasystem';
 $password = 'Eb09c~g0~4vZ';
 $db = 'paranoiasystem';
 
-// ENTER ELIMINATOR CODENAME HERE
-$eliminatorname = '7';
-// ENTER TARGET CODENAME HERE
-$targetname = 'Ninja';
+// Eliminator codename
+$eliminatorname = $_POST['eliminatorname'];
+// Target codename
+$targetname = $_POST['targetname'];
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $db);
@@ -37,18 +37,19 @@ $sql_getelims = "SELECT elims FROM paranoia WHERE codeindex=";
 // SELECT queries return a resultset; format that into an array
 $eliminatorindex =  $conn->query($sql_geteliminator);
 $targetindex = $conn->query($sql_gettarget);
+do {
 if($eliminatorindex and $targetindex) {
   $eliminator = $eliminatorindex->fetch_all()[0][0];
   $target = $targetindex->fetch_all()[0][0];
 
   // Get eliminator's target to make sure the elimination is legit
   $elimtargetindex = $conn->query($sql_getnewtarget . $eliminator);
+  if (!$elimtargetindex) {echo json_encode(2); break;}
   $elimtarget = $elimtargetindex->fetch_all()[0][0];
 
   // Do not perform elimination if the correct target is not passed in
-  print ($elimtarget . " : " . $target . "\n");
   if ($elimtarget != $target) {
-    echo "\n That is not the correct target. \n \n";
+    echo json_encode(1);
   } else {
     // Get new target
     $newtargetindex = $conn->query($sql_getnewtarget . $target);
@@ -66,20 +67,22 @@ if($eliminatorindex and $targetindex) {
     $conn->query($sql_seteliminated . $target);
 
     // Get eliminator's new eliminations
-    $eliminatoreliminationsindex = $conn->query($sql_getelims . $eliminator);
-    $eliminatoreliminations = $eliminatoreliminationsindex->fetch_all()[0][0];
+    $eliminatoreliminations = $conn->query($sql_getelims . $eliminator)->fetch_all()[0][0];
+
+    // TO DO: FIGURE OUT WHY THIS DOES NOT RETURN ANY DATA IN THE ECHO
 
     $info = array();
 
     array_push($info, $eliminatorname);
-    array_push($info, $newtargetname);
     array_push($info, $eliminatoreliminations);
+    array_push($info, $newtargetname);
 
-    print ("\n" . $info[0] . " : " . $info[1] . " : " . $info[2] . "\n" );
+    echo json_encode($info);
   }
 } else {
-  echo "Error retrieving record. " . $conn->error;
+  echo json_encode(0);
 }
+} while (false);
 
 // Close connection
 $conn->close();

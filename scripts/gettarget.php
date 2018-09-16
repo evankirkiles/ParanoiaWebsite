@@ -1,8 +1,8 @@
 <?php
-$servername = null;
-$username = null;
-$password = null;
-$db = null;
+$servername = 'den1.mysql6.gear.host';
+$username = 'paranoiasystem';
+$password = 'Eb09c~g0~4vZ';
+$db = 'paranoiasystem';
 
 // ENTER ELIMINATOR CODENAME HERE
 $eliminatorname = '315';
