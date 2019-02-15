@@ -1,7 +1,7 @@
 <?php
 $servername = 'den1.mysql6.gear.host';
 $username = 'paranoiasystem';
-$password = 'Eb09c~g0~4vZ';
+$password = 'AAAAAAAAAAA';
 $db = 'paranoiasystem';
 
 // Create connection
