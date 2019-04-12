@@ -29,6 +29,27 @@
       .row {display: flex;}
       .column { flex: 33.33%;
           padding: 5px;}
+      textarea {background-color: rgb(64, 64, 64);
+        color: Snow}
+      #selectemailtype { display: flex;
+        margin: auto;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 20%;
+      }
+      #selectemailtype > p {
+        margin-right: 5px;
+      }
+      .emailoption {
+        margin-right: 15px;
+      }
+      button {
+        background-color: #f44336;
+        color: #fff;
+        border-radius: 5px;
+        border-color: transparent;
+      }
 		</style>
 		<style type="text/css">a {text-decoration: none; color: white;}</style>
 	</head>
@@ -67,6 +88,7 @@
 
       <div class='column'>
         <h3 align='center'><font color=Snow font-family='Courier New'>Eliminate Target</font></h3>
+        <p align='center'>(Emails both eliminator and target)</p>
         <form align='center' id="search_elimination">
           Eliminator Codename:<br>
           <input type="text" id="search_elimination_eliminator" autocomplete='off'><br>
@@ -103,6 +125,26 @@
         <p align='center'><font color='Red' id="reset_success"></font></p>
       </div>
     </div>
+
+    <div class='column'>
+        <h3 align='center'><font color=Snow font-family='Courier New'>Email</font></h3>
+        <form align='center' id="email">
+          <div id="selectemailtype">
+            <p>ALL</p>
+            <input type="radio" class="emailoption" name="emailoption" id="all" checked>
+            <p>LIVING</p>
+            <input type="radio" class="emailoption" name="emailoption" id="living">
+            <p>PLAYER</p>
+            <input type="radio" class="emailoption" name="emailoption" id="player">
+          </div>
+          <div id="ifplayerselected" style="display: none">Code name: <input type="text" id="codenameemail"><br><br></div>
+          Enter email text:<br>
+          <div style="color: #999999">(Use ~(TARGET)~ to insert the target name)</div>
+          <br>
+          <textarea rows="8" cols="50" id="emailtext"></textarea><br><br>
+          <button form="email">SEND</button>
+        </form>
+      </div>
 
 		<p align='center'>
 		<h3 align = 'center'><a href="/leaderboards.php" hspace=20><font color=#8f9b9e>Leaderboards&emsp;</font></a>

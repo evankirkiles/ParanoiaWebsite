@@ -47,6 +47,14 @@ $(document).ready(function() {
     }
   });
 
+  $('#email').submit(function(e) {
+    if ($('#emailtext').val() != '') {
+      send_email($('#emailtext').val(), $('.emailoption:checked').attr('id'), $('#codenameemail').val());
+      $('#emailtext').val('');
+    }
+    return false;
+  })
+
   $('#shuffle').submit(function(e) {
     if ($('#shuffle_text').val() == 'SHUFFLE') {
       $('#shuffle_success').css('color', 'blue');
@@ -57,6 +65,14 @@ $(document).ready(function() {
       $('#shuffle_success').css('color', 'red');
       $('#shuffle_success').text('Enter SHUFFLE correctly.');
       return false;
+    }
+  });
+
+  $('#email input[type=radio]').on('change', function() {
+    if ($('#player', '#email').prop('checked')) {
+      $('#ifplayerselected').css('display', 'block');
+    } else {
+      $('#ifplayerselected').css('display', 'none');
     }
   });
 });
@@ -128,5 +144,23 @@ function reset_db() {
     $('#reset_success').css('color', 'red');
     $('#reset_success').text('Reset failed.');
   }
+  });
+};
+
+function send_email(email, setting, codename) {
+  $.ajax({
+    type: "POST",
+    url: '/php_handlers/php_handler_email.php',
+    data: {emailtext: email,
+           setting: setting,
+           codename: codename},
+    dataType: 'json',
+    success: function(response) {
+      alert('Email was a success.');
+    },
+    error: function(something, err) {
+      console.log(something.responseText);
+      alert('Email was a failure.');
+    }
   });
 };
