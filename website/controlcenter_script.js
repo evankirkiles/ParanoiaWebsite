@@ -49,10 +49,13 @@ $(document).ready(function() {
 
   $('#email').submit(function(e) {
     if ($('#emailtext').val() != '') {
+      $('#successOrFailureToEmail').css('color', 'white');
       $('#successOrFailureToEmail').text('Sending...');
       send_email($('#emailtext').val(), $('.emailoption:checked').attr('id'), $('#codenameemail').val(), $('#emailsubject').val(), (data) => {
+        $('#successOrFailureToEmail').css('color', 'green');
         $('#successOrFailureToEmail').text('Sent email to ' + data + ' players.');
       }, () => { 
+        $('#successOrFailureToEmail').css('color', 'red');
         $('#successOrFailureToEmail').text('Failed to send email.');
       });
       $('#emailtext').val('');
