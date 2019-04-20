@@ -1,8 +1,11 @@
 <?php
-$servername = 'den1.mysql6.gear.host';
-$username = 'paranoiasystem';
-$password = 'Eb09c~g0~4vZ';
-$db = 'paranoiasystem';
+$strJsonFileContents = file_get_contents("../config/configuration.json");
+$dataArray = json_decode($strJsonFileContents, true);
+
+$servername = $dataArray["MySQLDatabase"]["location"];
+$username = $dataArray["MySQLDatabase"]["username"];
+$password = $dataArray["MySQLDatabase"]["password"];
+$db = $dataArray["MySQLDatabase"]["database"];
 
 // Eliminator codename
 $eliminatorname = $_POST['eliminatorname'];
@@ -68,9 +71,6 @@ if($eliminatorindex and $targetindex) {
 
     // Get eliminator's new eliminations
     $eliminatoreliminations = $conn->query($sql_getelims . $eliminator)->fetch_all()[0][0];
-
-    // TO DO: FIGURE OUT WHY THIS DOES NOT RETURN ANY DATA IN THE ECHO
-
     $info = array();
 
     array_push($info, $eliminatorname);

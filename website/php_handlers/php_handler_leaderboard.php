@@ -1,8 +1,11 @@
 <?php
-$servername = 'den1.mysql6.gear.host';
-$username = 'paranoiasystem';
-$password = 'Eb09c~g0~4vZ';
-$db = 'paranoiasystem';
+$strJsonFileContents = file_get_contents("../config/configuration.json");
+$dataArray = json_decode($strJsonFileContents, true);
+
+$servername = $dataArray["MySQLDatabase"]["location"];
+$username = $dataArray["MySQLDatabase"]["username"];
+$password = $dataArray["MySQLDatabase"]["password"];
+$db = $dataArray["MySQLDatabase"]["database"];
 
 // Get whether looking for alive or all
 $alive = $_POST['alive'];

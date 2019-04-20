@@ -49,7 +49,12 @@ $(document).ready(function() {
 
   $('#email').submit(function(e) {
     if ($('#emailtext').val() != '') {
-      send_email($('#emailtext').val(), $('.emailoption:checked').attr('id'), $('#codenameemail').val());
+      $('#successOrFailureToEmail').text('Sending...');
+      send_email($('#emailtext').val(), $('.emailoption:checked').attr('id'), $('#codenameemail').val(), $('#emailsubject').val(), (data) => {
+        $('#successOrFailureToEmail').text('Sent email to ' + data + ' players.');
+      }, () => { 
+        $('#successOrFailureToEmail').text('Failed to send email.');
+      });
       $('#emailtext').val('');
     }
     return false;
@@ -100,6 +105,16 @@ function eliminate_target(eliminator, target) {
         $('#results2_newtarget').text(response[2]);
         $('#results2_success').css('color', 'green');
         $('#results2_success').text('Elimination succeeded.');
+
+        // If the elimination succeeds, email the target and the eliminator
+        // ELIMINATOR EMAIL
+        send_email('Greetings ' + response[0] + ',\n\nYour elimination on ' + target + 
+          ' was a success.\n Your elimination count: ' + response[1] + '\nYour new target: ' + response[2] + 
+          '\n\nHappy hunting.', 'player', eliminator, 'Confirmed Elimination', () => {}, () => {});
+
+        // TARGET EMAIL
+        send_email('Greetings ' + target + ',\n\nWe regret to inform you that you have been eliminated by ' + 
+          response[0] + '\n\nBetter luck next time.', 'player', target, 'Paranoia Elimination', () => {}, () => {});
       }
     }
   });
@@ -147,20 +162,21 @@ function reset_db() {
   });
 };
 
-function send_email(email, setting, codename) {
+function send_email(email, setting, codename, subject, onSuccess, onFail) {
   $.ajax({
     type: "POST",
     url: '/php_handlers/php_handler_email.php',
     data: {emailtext: email,
+           emailsubject: subject,
            setting: setting,
            codename: codename},
     dataType: 'json',
     success: function(response) {
-      alert('Email was a success.');
+      onSuccess(response);
     },
     error: function(something, err) {
+      onFail();
       console.log(something.responseText);
-      alert('Email was a failure.');
     }
   });
 };

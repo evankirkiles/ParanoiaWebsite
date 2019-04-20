@@ -1,0 +1,17 @@
+{
+	"MySQLDatabase": {
+		"location": "den1.mysql6.gear.host",
+		"username": "paranoiasystem",
+		"password": "Eb09c~g0~4vZ",
+		"database": "paranoiasystem"
+	},
+
+	"email": {
+		"username": "kirkilese20@kent-school.edu",
+		"password": "ew359854"
+	},
+
+	"customization": {
+		"emailFrom": "The Paranoia Commissioner"
+	}
+}

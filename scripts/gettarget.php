@@ -1,11 +1,14 @@
 <?php
-$servername = 'den1.mysql6.gear.host';
-$username = 'paranoiasystem';
-$password = 'AAAAAAAAAA';
-$db = 'paranoiasystem';
+$strJsonFileContents = file_get_contents("./website/config/configuration.json");
+$dataArray = json_decode($strJsonFileContents, true);
+
+$servername = $dataArray["MySQLDatabase"]["location"];
+$username = $dataArray["MySQLDatabase"]["username"];
+$password = $dataArray["MySQLDatabase"]["password"];
+$db = $dataArray["MySQLDatabase"]["database"];
 
 // ENTER ELIMINATOR CODENAME HERE
-$eliminatorname = '315';
+$eliminatorname = '0$';
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $db);

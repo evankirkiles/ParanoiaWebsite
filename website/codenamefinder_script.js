@@ -15,6 +15,7 @@ $(document).ready(function() {
     if (querycodename == '') {
       return false;
     }
+    querycodename.replace(/(['"])/g, '');
     search_with_codename(querycodename);
     return false;
   });

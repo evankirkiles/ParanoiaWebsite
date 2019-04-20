@@ -31,6 +31,8 @@
           padding: 5px;}
       textarea {background-color: rgb(64, 64, 64);
         color: Snow}
+      #emailsubject {background-color: rgb(64, 64, 64);
+        color: Snow}
       #selectemailtype { display: flex;
         margin: auto;
         flex-direction: row;
@@ -138,11 +140,15 @@
             <input type="radio" class="emailoption" name="emailoption" id="player">
           </div>
           <div id="ifplayerselected" style="display: none">Code name: <input type="text" id="codenameemail"><br><br></div>
+          Enter email subject:<br><br>
+          <input type="text" id="emailsubject"><br><br>
+
           Enter email text:<br>
           <div style="color: #999999">(Use ~(TARGET)~ to insert the target name)</div>
           <br>
           <textarea rows="8" cols="50" id="emailtext"></textarea><br><br>
-          <button form="email">SEND</button>
+          <button form="email">SEND</button> <br><br>
+          <div id="successOrFailureToEmail"></div>
         </form>
       </div>
 
