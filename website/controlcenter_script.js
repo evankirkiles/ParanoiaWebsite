@@ -49,16 +49,7 @@ $(document).ready(function() {
 
   $('#email').submit(function(e) {
     if ($('#emailtext').val() != '') {
-      $('#successOrFailureToEmail').css('color', 'white');
-      $('#successOrFailureToEmail').text('Sending...');
-      send_email($('#emailtext').val(), $('.emailoption:checked').attr('id'), $('#codenameemail').val(), $('#emailsubject').val(), (data) => {
-        $('#successOrFailureToEmail').css('color', 'green');
-        $('#successOrFailureToEmail').text('Sent email to ' + data + ' players.');
-      }, () => { 
-        $('#successOrFailureToEmail').css('color', 'red');
-        $('#successOrFailureToEmail').text('Failed to send email.');
-      });
-      $('#emailtext').val('');
+      slowDownEmailSending(0, 0, () => {$('#emailtext').val('') });
     }
     return false;
   })
@@ -84,6 +75,33 @@ $(document).ready(function() {
     }
   });
 });
+
+// Sleeper function
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function slowDownEmailSending(emailCount, attempts, callback) {
+  $('#successOrFailureToEmail').css('color', 'white');
+  $('#successOrFailureToEmail').text('Sending...');
+  send_email($('#emailtext').val(), $('.emailoption:checked').attr('id'), $('#codenameemail').val(), $('#emailsubject').val(), async (data) => {
+    if (!data['continue']) {
+      $('#successOrFailureToEmail').css('color', 'green');
+      $('#successOrFailureToEmail').text('Sent email to ' + (data['count'] != 0 ? data['count'] + 1 : 'no') + ' players. Finished.');
+      callback();
+    } else {
+      $('#successOrFailureToEmail').css('color', 'blue');
+      $('#successOrFailureToEmail').text('Sent email to total of ' + data['count'] + ' players. Waiting to send next wave (Attempt #' + (attempts) + '), don\'t close...');
+      // Wait 1 minute before sending the next wave of emails
+      await sleep(0.5 * 1000 * 60);
+      slowDownEmailSending(data['count'], attempts + 1, callback);
+    }
+  }, () => { 
+    $('#successOrFailureToEmail').css('color', 'red');
+    $('#successOrFailureToEmail').text('Failed to send email.');
+    callback();
+  }, emailCount);
+}
 
 function eliminate_target(eliminator, target) {
   $.ajax({
@@ -113,11 +131,11 @@ function eliminate_target(eliminator, target) {
         // ELIMINATOR EMAIL
         send_email('Greetings ' + response[0] + ',\n\nYour elimination on ' + target + 
           ' was a success.\n Your elimination count: ' + response[1] + '\nYour new target: ' + response[2] + 
-          '\n\nHappy hunting.', 'player', eliminator, 'Confirmed Elimination', () => {}, () => {});
+          '\n\nHappy hunting.', 'player', eliminator, 'Confirmed Elimination', () => {}, () => {}, 0);
 
         // TARGET EMAIL
         send_email('Greetings ' + target + ',\n\nWe regret to inform you that you have been eliminated by ' + 
-          response[0] + '\n\nBetter luck next time.', 'player', target, 'Paranoia Elimination', () => {}, () => {});
+          response[0] + '\n\nBetter luck next time.', 'player', target, 'Paranoia Elimination', () => {}, () => {}, 0);
       }
     }
   });
@@ -165,14 +183,15 @@ function reset_db() {
   });
 };
 
-function send_email(email, setting, codename, subject, onSuccess, onFail) {
+function send_email(email, setting, codename, subject, onSuccess, onFail, emailCount) {
   $.ajax({
     type: "POST",
     url: '/php_handlers/php_handler_email.php',
     data: {emailtext: email,
            emailsubject: subject,
            setting: setting,
-           codename: codename},
+           codename: codename,
+           countOfEmails: emailCount},
     dataType: 'json',
     success: function(response) {
       onSuccess(response);

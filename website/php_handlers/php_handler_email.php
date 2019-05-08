@@ -28,13 +28,13 @@ $email = $_POST['emailtext'];
 $emailsubject = $_POST['emailsubject'];
 
 // SQL command to get all players emails from database
-$sql_emails = 'SELECT email,target FROM paranoia';
+$sql_emails = 'SELECT email,target FROM paranoia ORDER BY codeindex';
 // SQL command to get all living players emails from database
-$sql_emails_living = 'SELECT email,target FROM paranoia WHERE eliminated=0';
+$sql_emails_living = 'SELECT email,target FROM paranoia WHERE eliminated=0 ORDER BY codeindex';
 // SQL command to get the email of a specific codename
 $sql_specific_codename = 'SELECT email,target FROM paranoia WHERE codename LIKE "';
 // SQL command to get the names and target numbers for filling in email
-$sql_names_targets = 'SELECT codeindex,codename FROM paranoia';
+$sql_names_targets = 'SELECT codeindex,codename FROM paranoia ORDER BY codeindex';
 
 // Success code global
 $success = true;
@@ -91,17 +91,30 @@ $transport->setPassword($senderpass);
 
 $mailer = (new Swift_Mailer($transport));
 
-$countOfEmails = 0;
+// Retain the count from before
+$countOfEmails = $_POST['countOfEmails'];
+$shouldContinue = false;
+$tempCount = -1;
 
 foreach($list as $index => $objects) {
-  $countOfEmails++;
-  $message = (new Swift_Message($emailsubject));
-  $message->setFrom(array($senderemail => $senderfrom))
-    ->setTo(array(key($objects)))
-    ->setBody(str_replace('~(TARGET)~', $idsandtargets[strval($objects[key($objects)])], $email));
+  if ($tempCount == $countOfEmails) {
+    $tempCount++;
+    $countOfEmails++;
+    $message = (new Swift_Message($emailsubject));
+    $message->setFrom(array($senderemail => $senderfrom))
+      ->setTo(array(key($objects)))
+      ->setBody(str_replace('~(TARGET)~', $idsandtargets[strval($objects[key($objects)])], $email));
 
-  $result = $mailer->send($message);
+    try {
+      $result = $mailer->send($message);
+    } catch (Exception $e) {
+      $shouldContinue = true;
+      break;
+    }
+  } else {
+    $tempCount++;
+  }
 }
 
-echo $countOfEmails;
+echo json_encode(["count" => $countOfEmails - 1, "continue" => $shouldContinue]);
 ?>
