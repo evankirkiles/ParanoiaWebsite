@@ -28,11 +28,11 @@ $email = $_POST['emailtext'];
 $emailsubject = $_POST['emailsubject'];
 
 // SQL command to get all players emails from database
-$sql_emails = 'SELECT email,target FROM paranoia ORDER BY codeindex';
+$sql_emails = 'SELECT email,target,codename FROM paranoia ORDER BY codeindex';
 // SQL command to get all living players emails from database
-$sql_emails_living = 'SELECT email,target FROM paranoia WHERE eliminated=0 ORDER BY codeindex';
+$sql_emails_living = 'SELECT email,target,codename FROM paranoia WHERE eliminated=0 ORDER BY codeindex';
 // SQL command to get the email of a specific codename
-$sql_specific_codename = 'SELECT email,target FROM paranoia WHERE codename LIKE "';
+$sql_specific_codename = 'SELECT email,target,codename FROM paranoia WHERE codename LIKE "';
 // SQL command to get the names and target numbers for filling in email
 $sql_names_targets = 'SELECT codeindex,codename FROM paranoia ORDER BY codeindex';
 
@@ -58,10 +58,10 @@ if ($setting == 'all') {
 
 // Build dictionary of ids and names
 $results2 = $conn->query($sql_names_targets);
-$idsandtargets = array();
+$idsandcodenames = array();
 if ($results2) {
   foreach($results2->fetch_all()as $data1) {
-    $idsandtargets[strval($data1[0])] = $data1[1];
+    $idsandcodenames[strval($data1[0])] = $data1[1];
   }
 }
 
@@ -73,7 +73,7 @@ if ($results) {
   $arrayIndex = 0;
   foreach($results->fetch_all() as $data) {
     if (!($data[0] == null || $data[0] == '')) { 
-    	$list[$arrayIndex] = array($data[0] => $data[1]);
+    	$list[$arrayIndex] = array($data[0], $data[1], $data[2]);
       $arrayIndex++;
     }
   }
@@ -94,16 +94,23 @@ $mailer = (new Swift_Mailer($transport));
 // Retain the count from before
 $countOfEmails = $_POST['countOfEmails'];
 $shouldContinue = false;
-$tempCount = -1;
+$tempCount = 0;
 
+// $objects is an array with 3 elements: [0] the email, [1] the target id, [2] the user's id
 foreach($list as $index => $objects) {
   if ($tempCount == $countOfEmails) {
     $tempCount++;
     $countOfEmails++;
+
+    // $idsandcodenames links user id to codenames, so access it using the id of the target
+    // as the index which is currently the second element of each $objects array
+    $tempemail = str_replace('~(TARGET)~', $idsandcodenames[strval($objects[1])], $email);
+    $tempemail = str_replace('~(SELF)~', $objects[2], $tempemail);
+
     $message = (new Swift_Message($emailsubject));
     $message->setFrom(array($senderemail => $senderfrom))
-      ->setTo(array(key($objects)))
-      ->setBody(str_replace('~(TARGET)~', $idsandtargets[strval($objects[key($objects)])], $email));
+      ->setTo(array($objects[0]))
+      ->setBody($tempemail);
 
     try {
       $result = $mailer->send($message);
@@ -116,5 +123,5 @@ foreach($list as $index => $objects) {
   }
 }
 
-echo json_encode(["count" => $countOfEmails - 1, "continue" => $shouldContinue]);
+echo json_encode(["count" => $countOfEmails, "continue" => $shouldContinue]);
 ?>

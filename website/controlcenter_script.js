@@ -87,7 +87,7 @@ function slowDownEmailSending(emailCount, attempts, callback) {
   send_email($('#emailtext').val(), $('.emailoption:checked').attr('id'), $('#codenameemail').val(), $('#emailsubject').val(), async (data) => {
     if (!data['continue']) {
       $('#successOrFailureToEmail').css('color', 'green');
-      $('#successOrFailureToEmail').text('Sent email to ' + (data['count'] != 0 ? data['count'] + 1 : 'no') + ' players. Finished.');
+      $('#successOrFailureToEmail').text('Sent email to ' + (data['count'] != 0 ? data['count'] : 'no') + ' players. Finished.');
       callback();
     } else {
       $('#successOrFailureToEmail').css('color', 'blue');
