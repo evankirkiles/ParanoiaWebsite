@@ -47,6 +47,14 @@ $(document).ready(function() {
     }
   });
 
+  $('#revive').submit(function(e) {
+    if ($('#revive_text').val() != '') {
+      $('#revive_success').css('color', 'blue');
+      $('#revive_success').text('Revive pending...');
+      revive_player($('#revivetext').val());
+    }
+  });
+
   $('#email').submit(function(e) {
     if ($('#emailtext').val() != '') {
       slowDownEmailSending(0, 0, () => {$('#emailtext').val('') });
@@ -169,7 +177,7 @@ function shuffle_living(update) {
     $('#shuffle_success').text('Shuffle failed.');
   }
   });
-};
+}
 
 function reset_db() {
   $.get('/php_handlers/php_handler_resetdatabase.php', function(data) {
@@ -181,7 +189,23 @@ function reset_db() {
     $('#reset_success').text('Reset failed.');
   }
   });
-};
+}
+
+function revive_player(codename) {
+  $.get('/php_handlers/php_handler_revivetarget.php', function(data) {
+    if (data != 0 && data['revived_index'] != undefined) {
+      $('#revive_success').css('color', 'green');
+      $('#revive_success').text('Revived ' + codename + '! Sent notification emails.');
+
+      // Send email to the revived and the hunter of the old target
+      send_email('You have been revived...\nYour target remains ~(TARGET)~.\nHappy hunting.', 'player', codename, 'The Lord of Light Smiles Upon You', () => {}, () => {}, 0);
+      send_email('Your target has been changed to ~(TARGET)~, back from the dead.\nHappy hunting.', 'player', data['hunter_name'], 'Target Change', () => {}, () => {}, 0);   
+    } else {
+      $('#revive_success').css('color', 'red');
+      $('#revive_success').text('Revive failed.');
+    }
+  });
+}
 
 function send_email(email, setting, codename, subject, onSuccess, onFail, emailCount) {
   $.ajax({

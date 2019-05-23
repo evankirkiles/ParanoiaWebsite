@@ -124,7 +124,13 @@
           Type 'RESET' and hit enter:<br>
           <input type="text" id="reset_text" autocomplete='off'><br>
         </form>
-        <p align='center'><font color='Red' id="reset_success"></font></p>
+        <p align='center'><font color='Red' id="reset_success"><br><br><br></font></p>
+        <h3 align='center'><font color=Snow font-family='Courier New'>Revive Player</font></h3>
+        <form align='center' id="revive">
+          Codename of player to revive:<br>
+          <input type="text" id="revive_text" autocomplete='off'><br>
+        </form>
+        <p align='center'><font color='Red' id="revive_success"></font></p>
       </div>
     </div>
 

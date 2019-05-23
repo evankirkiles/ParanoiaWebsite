@@ -20,7 +20,7 @@ if ($conn -> connect_error) {
 // SQL command to get codeindex and target of dead person's codename
 $sql_getdead = "SELECT codeindex, target FROM paranoia WHERE codename LIKE '" . $codename . "%'";
 // SQL command to get the codeindex of the dead person's target's hunter
-$sql_gethunter = "SELECT codeindex FROM paranoia WHERE target=";
+$sql_gethunter = "SELECT codeindex, codename FROM paranoia WHERE target=";
 // SQL command to update the target of the hunter to the dead person
 $sql_settarget_1 = "UPDATE paranoia SET target=";
 $sql_settarget_2 = " WHERE codeindex=";
@@ -39,6 +39,7 @@ if($getdead) {
   if ($gethunter) {
     // Save the index of the hunter
     $hunter_ind = $gethunter->fetch_all()[0][0];
+    $hunter_name = $gethunter->fetch_all()[0][1];
 
     // Revive the dead person
     $conn->query($sql_revive . $dead_ind);
@@ -46,7 +47,7 @@ if($getdead) {
     $conn->query($sql_settarget_1 . $dead_ind . $sql_settarget_2 . $hunter_ind);
 
     // Finally, echo a JSON object containing all the information
-    echo json_encode(array('revived_index' => $dead_ind, 'revived_codename' => $codename, 'hunter_index' => $hunter_ind));
+    echo json_encode(array('revived_index' => $dead_ind, 'revived_codename' => $codename, 'hunter_name' => $hunter_name));
   } else {
     echo json_encode(0);
   }
