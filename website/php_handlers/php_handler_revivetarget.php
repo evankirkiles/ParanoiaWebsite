@@ -8,7 +8,7 @@ $password = $dataArray["MySQLDatabase"]["password"];
 $db = $dataArray["MySQLDatabase"]["database"];
 
 // Player codename to revive
-$codename = $_POST['codenames'];
+$codename = $_POST['codename'];
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $db);
@@ -31,25 +31,25 @@ $sql_revive = "UPDATE paranoia SET eliminated=0 WHERE codeindex=";
 $getdead =  $conn->query($sql_getdead);
 if($getdead) {
   // Save the index and the dead person's target
-  $dead_ind = $getdead->fetch_all()[0][0];
-  $dead_targ = $getdead->fetch_all()[0][1];
+  $stats = $getdead->fetch_all()[0];
+  // Dead ind is 0, dead target is 1
 
   // Now get the index of the current hunter of the dead person's target
-  $gethunter = $conn->query($sql_gethunter . $dead_targ)
+  $gethunter = $conn->query($sql_gethunter . $stats[1]);
   if ($gethunter) {
     // Save the index of the hunter
-    $hunter_ind = $gethunter->fetch_all()[0][0];
-    $hunter_name = $gethunter->fetch_all()[0][1];
+    $hunterstats = $gethunter->fetch_all()[0];
+    // Hunter ind is 0, hunter name is 1
 
     // Revive the dead person
-    $conn->query($sql_revive . $dead_ind);
+    $conn->query($sql_revive . $stats[0]);
     // Set the target of the hunter to the revived person.
-    $conn->query($sql_settarget_1 . $dead_ind . $sql_settarget_2 . $hunter_ind);
+    $conn->query($sql_settarget_1 . $stats[0] . $sql_settarget_2 . $hunterstats[0]);
 
     // Finally, echo a JSON object containing all the information
-    echo json_encode(array('revived_index' => $dead_ind, 'revived_codename' => $codename, 'hunter_name' => $hunter_name));
+    echo json_encode(array('revived_index' => $stats[0], 'revived_codename' => $codename, 'hunter_name' => $hunterstats[1], 'hunter_ind' => $hunterstats[0]));
   } else {
-    echo json_encode(0);
+    echo json_encode($stats);
   }
 } else {
   echo json_encode(0);
